@@ -12,8 +12,9 @@
 <use name="boost_python"/>
 <use name="boost_regex"/>
 <use name="rootpy"/>
-<use   name="TauAnalysis/ClassicSVfit/"/>
-<use   name="TauAnalysis/SVfitTF/"/>
 <use name="UserCode/ICHiggsTauTau"/>
+<use name="TauAnalysis/ClassicSVfit"/>
+<use name="TauAnalysis/SVfitTF"/>
+<Flags CPPDEFINES="USE_SVFITTF"/>
 </bin>
 

@@ -3,9 +3,12 @@
 <use   name="roofit"/>
 <use   name="rootminuit"/>
 <use   name="rootminuit2"/>
-<use   name="TauAnalysis/ClassicSVfit/"/>
-<use   name="TauAnalysis/SVfitTF/"/>
 <use   name="UserCode/ICHiggsTauTau"/>
+<use   name="boost"/>
+<Flags CPPDEFINES="USE_SVFITTF"/>
+<Flags LDFLAGS="-rdynamic" />
+<Flags ADD_SUBDIR="1"/>
+<use name="TauAnalysis/SVfitTF"/>
 <export>
   <lib   name="1"/>
 </export>

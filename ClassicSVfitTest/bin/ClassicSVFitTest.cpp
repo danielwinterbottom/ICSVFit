@@ -7,10 +7,13 @@
 #include "TTree.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
-
+#include "TauAnalysis/ClassicSVfit/interface/ClassicSVfit.h"
+#include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
+#include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
 #include "TSystem.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
+using namespace classic_svFit;
 
 int main(int argc, char* argv[]){
 
@@ -79,14 +82,26 @@ int main(int argc, char* argv[]){
   otree->Branch("svfit_mass", &svfit_mass);
   otree->Branch("svfit_transverse_mass", &svfit_transverse_mass);
   otree->Branch("svfit_vector", &svfit_vector);
+  
+  for (unsigned i = 0; i < itree->GetEntries(); ++i) {
+    itree->GetEntry(i);
+    std::pair<ic::Candidate, std::vector<double>> result;
+    
+    // define MET
+    double measuredMETx =  met->vector().px();
+    double measuredMETy = met->vector().py();
 
-  //ic::SVFitService svfit_service;
-  //
-  //
-  //for (unsigned i = 0; i < itree->GetEntries(); ++i) {
-  //  itree->GetEntry(i);
-  //  std::pair<ic::Candidate, std::vector<double>> result;
-  //  if (mode == 0) {
+    // define MET covariance
+    TMatrixD covMET(2, 2);
+    covMET(0,0) = met->xx_sig();
+    covMET(1,0) = met->yx_sig();
+    covMET(0,1) = met->xy_sig();
+    covMET(1,1) = met->yy_sig();
+
+    std::vector<MeasuredTauLepton> measuredTauLeptons;
+    if (mode == 0) {
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToMuDecay, c1->pt(), c1->eta(), c1->phi(), 0.10566)); 
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M()));         
   //    result = svfit_service.SVFitCandidateMuHad(c1, c2,dm2, met, MC);
   //  } else if (mode == 1){
   //    result = svfit_service.SVFitCandidateEleMu(c1, c2, met, MC);
@@ -97,7 +112,26 @@ int main(int argc, char* argv[]){
   //  } else{
   //    std::cout<<"Mode "<<mode<<" not valid"<<std::endl;
   //    exit(1);
-  //  }
+    }
+
+    int verbosity = 0;
+    ClassicSVfit svFitAlgo(verbosity);
+    svFitAlgo.addLogM_fixed(true, 6.);
+    svFitAlgo.setLikelihoodFileName("testClassicSVfit.root");
+    svFitAlgo.integrate(measuredTauLeptons, measuredMETx, measuredMETy, covMET);
+    bool isValidSolution = svFitAlgo.isValidSolution();
+
+    if (isValidSolution){
+      svfit_mass = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getMass();
+      svfit_transverse_mass = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getTransverseMass();
+
+    //svfit_vector->set_vector(ROOT::Math::PtEtaPhiMVector(svFitAlgo.getHistogramAdapter())->getMass(), svFitAlgo.getHistogramAdapter())->getMass(), svFitAlgo.getHistogramAdapter())->getMass(), svfit_mass));
+    } else {
+      svfit_mass = -1;
+      svfit_transverse_mass = -1;
+    }
+    svfit_vector->set_id(objects_hash);
+    std::cout << svfit_mass << std::endl;
   //  svfit_mass = (result.second).at(0);
   //  if((result.second).size()>1){
   //    svfit_transverse_mass= (result.second).at(1);
@@ -106,7 +140,7 @@ int main(int argc, char* argv[]){
   //  svfit_vector->set_id(objects_hash);
   //  std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
   //  otree->Fill();
-  //}
+  }
   output->Write();
   delete otree;
   output->Close();
