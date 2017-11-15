@@ -1,0 +1,12 @@
+<use   name="root"/>
+<use   name="rootcintex"/>
+<use   name="roofit"/>
+<use   name="rootminuit"/>
+<use   name="rootminuit2"/>
+<use   name="TauAnalysis/ClassicSVfit/"/>
+<use   name="TauAnalysis/SVfitTF/"/>
+<use   name="UserCode/ICHiggsTauTau"/>
+<export>
+  <lib   name="1"/>
+</export>
+
