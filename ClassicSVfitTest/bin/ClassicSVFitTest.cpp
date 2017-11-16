@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
   if(argc==3) file_prefix = argv[2];
   std::string input_file = argv[1];
   std::string output_file = input_file;
-  //bool MC=true; // Set to true to use Markov-Chain integration
+
   if (output_file.find("input.root") != input_file.npos) {
     std::size_t pos = output_file.find("input.root");
     output_file.replace(pos, std::string("input.root").length(), "output.root");
@@ -101,45 +101,38 @@ int main(int argc, char* argv[]){
     std::vector<MeasuredTauLepton> measuredTauLeptons;
     if (mode == 0) {
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToMuDecay, c1->pt(), c1->eta(), c1->phi(), 0.10566)); 
-      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M()));         
-  //    result = svfit_service.SVFitCandidateMuHad(c1, c2,dm2, met, MC);
-  //  } else if (mode == 1){
-  //    result = svfit_service.SVFitCandidateEleMu(c1, c2, met, MC);
-  //  } else if (mode == 2){
-  //    result = svfit_service.SVFitCandidateEleHad(c1, c2, dm2, met, MC);
-  //  } else if (mode == 3){
-  //    result = svfit_service.SVFitCandidateHadHad(c1,dm1, c2, dm2,met, MC);
-  //  } else{
-  //    std::cout<<"Mode "<<mode<<" not valid"<<std::endl;
-  //    exit(1);
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));         
+    } else if (mode == 1){
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToElecDecay, c1->pt(), c1->eta(), c1->phi(), 0.000511));
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToMuDecay, c2->pt(), c2->eta(), c2->phi(), 0.10566));
+    } else if (mode == 2){
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToElecDecay, c1->pt(), c1->eta(), c1->phi(), 0.000511));
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));
+    } else if (mode == 3){
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c1->pt(), c1->eta(), c1->phi(), c1->M(), dm1));
+      measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));
+    } else{
+      std::cout<<"Mode "<<mode<<" not valid"<<std::endl;
+      exit(1);
     }
 
     int verbosity = 0;
     ClassicSVfit svFitAlgo(verbosity);
     svFitAlgo.addLogM_fixed(true, 6.);
-    svFitAlgo.setLikelihoodFileName("testClassicSVfit.root");
     svFitAlgo.integrate(measuredTauLeptons, measuredMETx, measuredMETy, covMET);
     bool isValidSolution = svFitAlgo.isValidSolution();
 
     if (isValidSolution){
       svfit_mass = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getMass();
       svfit_transverse_mass = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getTransverseMass();
-
-    //svfit_vector->set_vector(ROOT::Math::PtEtaPhiMVector(svFitAlgo.getHistogramAdapter())->getMass(), svFitAlgo.getHistogramAdapter())->getMass(), svFitAlgo.getHistogramAdapter())->getMass(), svfit_mass));
+     svfit_vector->set_vector((ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getPt(), static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getEta(), static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getPhi(), svfit_mass));
     } else {
       svfit_mass = -1;
       svfit_transverse_mass = -1;
     }
     svfit_vector->set_id(objects_hash);
-    std::cout << svfit_mass << std::endl;
-  //  svfit_mass = (result.second).at(0);
-  //  if((result.second).size()>1){
-  //    svfit_transverse_mass= (result.second).at(1);
-  //  } else svfit_transverse_mass=0;
-  //  svfit_vector = &(result.first);
-  //  svfit_vector->set_id(objects_hash);
-  //  std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
-  //  otree->Fill();
+    std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
+    otree->Fill();
   }
   output->Write();
   delete otree;
