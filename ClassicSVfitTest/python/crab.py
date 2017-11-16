@@ -13,7 +13,7 @@ config.section_('JobType')
 config.JobType.pluginName = 'PrivateMC'
 config.JobType.psetName = os.environ['CMSSW_BASE']+'/src/ICSVFit/ClassicSVfitTest/scripts/do_nothing_cfg.py'
 config.JobType.scriptExe = ''
-config.JobType.inputFiles = [os.environ['CMSSW_BASE']+'/src/ICSVFit/ClassicSVfitTest/scripts/FrameworkJobReport.xml', os.environ['CMSSW_BASE']+'/bin/'+os.environ['SCRAM_ARCH']+'/ClassicSVfitTest']
+config.JobType.inputFiles = [os.environ['CMSSW_BASE']+'/src/ICSVFit/ClassicSVfitTest/scripts/FrameworkJobReport.xml', os.environ['CMSSW_BASE']+'/bin/'+os.environ['SCRAM_ARCH']+'/ClassicSVFitTest']
 config.JobType.outputFiles = ['svfit_output.tar']
 # config.JobType.maxMemoryMB = args.maxMemory
 
