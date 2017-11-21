@@ -98,19 +98,25 @@ int main(int argc, char* argv[]){
     covMET(0,1) = met->xy_sig();
     covMET(1,1) = met->yy_sig();
 
+    double kappa = 5.;
+
     std::vector<MeasuredTauLepton> measuredTauLeptons;
     if (mode == 0) {
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToMuDecay, c1->pt(), c1->eta(), c1->phi(), 0.10566)); 
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));         
+      kappa = 4.;
     } else if (mode == 1){
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToElecDecay, c1->pt(), c1->eta(), c1->phi(), 0.000511));
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToMuDecay, c2->pt(), c2->eta(), c2->phi(), 0.10566));
+      kappa = 3.;
     } else if (mode == 2){
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToElecDecay, c1->pt(), c1->eta(), c1->phi(), 0.000511));
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));
+      kappa = 4.;
     } else if (mode == 3){
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c1->pt(), c1->eta(), c1->phi(), c1->M(), dm1));
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));
+      kappa = 5.;
     } else{
       std::cout<<"Mode "<<mode<<" not valid"<<std::endl;
       exit(1);
@@ -118,7 +124,7 @@ int main(int argc, char* argv[]){
 
     int verbosity = 0;
     ClassicSVfit svFitAlgo(verbosity);
-    svFitAlgo.addLogM_fixed(true, 6.);
+    svFitAlgo.addLogM_fixed(true, kappa);
     svFitAlgo.integrate(measuredTauLeptons, measuredMETx, measuredMETy, covMET);
     bool isValidSolution = svFitAlgo.isValidSolution();
 
