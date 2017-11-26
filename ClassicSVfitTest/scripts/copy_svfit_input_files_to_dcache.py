@@ -23,3 +23,5 @@ for root, dirnames, filenames in os.walk(options.input):
     fullfile = os.path.join(root, filename)
     print 'copying %(fullfile)s'%vars()
     os.system('lcg-cp %(fullfile)s %(dcache_path)s/%(filename)s'%vars())
+
+print "Finished copying files"

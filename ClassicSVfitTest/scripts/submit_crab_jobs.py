@@ -7,7 +7,7 @@ from optparse import OptionParser
 import math
 import fnmatch
 
-CRAB = 'Nov24_SVFit'
+CRAB = 'Nov25_SVFit'
 
 parser = OptionParser()
 
@@ -49,7 +49,7 @@ for subdir in subdirs:
   # submit the jobs over crab
   print 'Submitting jobs..'
   dcache_dir = 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/%s/%s' % (options.dcache_dir,subdir)
+  name = '%s%s' % (CRAB,subdir)
+  submit_command = './scripts/crabsub.py -i %s --name %s --area %s --file_prefix %s' % (folder,name,CRAB,dcache_dir)
 
-  submit_command = './scripts/crabsub.py -i %s --name %s --area %s --file_prefix %s' % (folder,CRAB,CRAB,dcache_dir)
-
-  #os.system(submit_command)
+  os.system(submit_command)
