@@ -22,11 +22,11 @@ if not options.folder:
   parser.error('No folder specified')
 
 
-subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','EFAKE0PI_UP','EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN']
+subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','EFAKE0PI_UP','EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN']
 
 
 for subdir in subdirs:
-  folder = '%s/%s' %(options.folder,subdir)  
+  folder = '%s/%s/' %(options.folder,subdir)  
   print 'Processing directory', folder 
   # first remove the files that we don't want to compute the SV fit for
   print 'Removing files that aren\'t needed..'
@@ -43,13 +43,12 @@ for subdir in subdirs:
   
   # then copy the files over to the dcache
   print 'Copying files to dcache..'
-  dcache_dir = '/%s/%s' % (options.dcache_dir,subdir)
+  dcache_dir = '/%s/%s/' % (options.dcache_dir,subdir)
   os.system('python scripts/copy_svfit_input_files_to_dcache.py -i %s -d %s' % (folder,dcache_dir)) 
 
   # submit the jobs over crab
   print 'Submitting jobs..'
-  dcache_dir = 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/%s/%s' % (options.dcache_dir,subdir)
+  dcache_dir = 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/%s/%s/' % (options.dcache_dir,subdir)
   name = '%s%s' % (CRAB,subdir)
   submit_command = './scripts/crabsub.py -i %s --name %s --area %s --file_prefix %s' % (folder,name,CRAB,dcache_dir)
-
   os.system(submit_command)
