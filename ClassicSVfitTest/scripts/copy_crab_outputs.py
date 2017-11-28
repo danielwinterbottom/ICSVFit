@@ -27,5 +27,7 @@ subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1
 
 for subdir in subdirs:
   folder = '%s/%s/' %(options.folder,subdir)  
-  copy_command='scripts/copy_from_dcache.sh %s %s' % (dcache_dir,folder)
+  dcache_dir = '%s/%s%s/' % (options.dcache_dir,CRAB,subdir)
+  print "Copying outputs from:", dcache_dir
+  copy_command='./scripts/copy_from_dcache.sh %s %s' % (dcache_dir,folder)
   os.system(copy_command)
