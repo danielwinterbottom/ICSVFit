@@ -6,6 +6,9 @@
 # The script will determine the latest subdirectory of path1 by comparing the dates/times in the directory name and then search all the subdirectroies (e.g 0000/ 0001/ 0002/ ...) for outputs and copy them to path2
 export path1=$1
 export path2=$2
+export batch=$3
+
+times_per_job=20
 
 date_names=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
     export most_recent=0
@@ -19,6 +22,8 @@ done
 
 directories=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $most_recent_string))
 export count=0
+n_times=0
+job_num=0
 for path1 in "${directories[@]}"; do
   filelist=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls /$path1/ | grep .tar | rev | cut -d"/" -f1 | rev))
   export dir=$(pwd)
@@ -26,8 +31,34 @@ for path1 in "${directories[@]}"; do
     ((count++))
     export fullpath1=srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms//$path1/$i
     export fullpath2=$path2/$i
-    lcg-cp $fullpath1 $fullpath2
+    if [ $batch == 1 ]; then
+      if [ $n_times == 0 ]; then 
+        job=$(echo job_copy_from_dcache_"$job_num".sh)
+        echo cd $dir > $job
+        echo source /vols/grid/cms/setup.sh > $job
+        echo "export SCRAM_ARCH=slc6_amd64_gcc481" >> $job
+        echo "eval \`scramv1 runtime -sh\`" >> $job
+        echo "ulimit -c 0" >> $job
+        ((n_times++))
+      else 
+        echo lcg-cp $fullpath1 $fullpath2 >> $job
+        ((n_times++))
+        if [ $n_times == $times_per_job ]; then
+           chmod 755 $job
+           qsub -q hep.q -l h_rt=0:180:0 -cwd $job
+           ((job_num++))
+           n_times=0
+        fi
+      fi
+    else 
+      lcg-cp $fullpath1 $fullpath2
+    fi
   done
 done
-echo Total files copied: $count
+if [ $batch == 1 ]; then
+  chmod 755 $job
+  qsub -q hep.q -l h_rt=0:180:0 -cwd $job
+else 
+  echo Total files copied: $count
+fi
 
