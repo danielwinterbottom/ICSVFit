@@ -39,6 +39,7 @@ for path1 in "${directories[@]}"; do
         echo "export SCRAM_ARCH=slc6_amd64_gcc481" >> $job
         echo "eval \`scramv1 runtime -sh\`" >> $job
         echo "ulimit -c 0" >> $job
+        echo lcg-cp $fullpath1 $fullpath2 >> $job
         ((n_times++))
       else 
         echo lcg-cp $fullpath1 $fullpath2 >> $job
@@ -58,7 +59,6 @@ done
 if [ $batch == 1 ]; then
   chmod 755 $job
   qsub -q hep.q -l h_rt=0:180:0 -cwd $job
-else 
+fi 
   echo Total files copied: $count
-fi
 
