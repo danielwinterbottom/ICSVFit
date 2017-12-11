@@ -15,6 +15,8 @@ parser.add_option("--folder", dest = "folder",
                   help="Specify folder that contains the output to be hadded")
 parser.add_option("--dcache_dir", dest = "dcache_dir",
                   help="Specify folder that contains the output to be hadded")
+parser.add_option("--copy", dest="copy", action='store_true', default=False,
+                  help="Copy inputs to dcache")
 
 (options,args) = parser.parse_args()
 
@@ -28,23 +30,24 @@ subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1
 for subdir in subdirs:
   folder = '%s/%s/' %(options.folder,subdir)  
   print 'Processing directory', folder 
-  # first remove the files that we don't want to compute the SV fit for
-  print 'Removing files that aren\'t needed..'
-  if 'MUFAKE' in subdir or 'EFAKE' in subdir:
-    os.system('ls %s/*.root | grep -v -e DY -e EWKZ | xargs rm' % (folder))
-  if 'EFAKE' in subdir:
-    os.system('ls %s/*.root | grep -v _et_ | xargs rm' % (folder))
-  if 'MUFAKE' in subdir:
-    os.system('ls %s/*.root | grep -v _mt_ | xargs rm' % (folder))
-  if 'TSCALE_' in subdir:
-    os.system('ls %s/*.root | grep -v _em_ | xargs rm' % (folder))
-  if 'TSCALE' in subdir and 'TSCALE_' not in subdir:
-    os.system('ls %s/*.root | grep _em_ | xargs rm' % (folder))
+  if options.copy:
+    # first remove the files that we don't want to compute the SV fit for
+    print 'Removing files that aren\'t needed..'
+    if 'MUFAKE' in subdir or 'EFAKE' in subdir:
+      os.system('ls %s/*.root | grep -v -e DY -e EWKZ | xargs rm' % (folder))
+    if 'EFAKE' in subdir:
+      os.system('ls %s/*.root | grep -v _et_ | xargs rm' % (folder))
+    if 'MUFAKE' in subdir:
+      os.system('ls %s/*.root | grep -v _mt_ | xargs rm' % (folder))
+    if 'TSCALE_' in subdir:
+      os.system('ls %s/*.root | grep -v _em_ | xargs rm' % (folder))
+    if 'TSCALE' in subdir and 'TSCALE_' not in subdir:
+      os.system('ls %s/*.root | grep _em_ | xargs rm' % (folder))
   
-  # then copy the files over to the dcache
-  print 'Copying files to dcache..'
-  dcache_dir = '/%s/%s/' % (options.dcache_dir,subdir)
-  os.system('python scripts/copy_svfit_input_files_to_dcache.py -i %s -d %s' % (folder,dcache_dir)) 
+    # then copy the files over to the dcache
+    print 'Copying files to dcache..'
+    dcache_dir = '/%s/%s/' % (options.dcache_dir,subdir)
+    os.system('python scripts/copy_svfit_input_files_to_dcache.py -i %s -d %s' % (folder,dcache_dir)) 
 
   # submit the jobs over crab
   print 'Submitting jobs..'

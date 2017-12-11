@@ -1,5 +1,3 @@
-#python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Nov24_SVFit/ --dcache_dir=/store/user/dwinterb/SVFit_Nov24
-
 
 import sys
 import os
@@ -26,8 +24,8 @@ subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1
 for subdir in subdirs:
   folder = '%s/%s/' %(options.folder,subdir)  
   dcache_dir = '%s/%s/' % (options.dcache_dir,subdir)
-  print "Copying outputs from:", dcache_dir
-  copy_command='./scripts/copy_from_dcache.sh %s %s 1 %s' % (dcache_dir,folder,subdir)
-  #copy_command='./scripts/copy_from_dcache.sh %s %s' % (dcache_dir,folder) # this doesn't use batch
+  print "Copying sv fit input files from:", folder
+  copy_command='./scripts/copy_to_dcache.sh %s %s 1 %s' % (folder,dcache_dir,subdir)
+  #copy_command='./scripts/copy_to_dcache.sh %s %s' % (folder,dcache_dir) # this doesn't use batch
 
   os.system(copy_command)
