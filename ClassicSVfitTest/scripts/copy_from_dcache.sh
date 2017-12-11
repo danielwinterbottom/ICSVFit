@@ -7,6 +7,7 @@
 export path1=$1
 export path2=$2
 export batch=$3
+export job_name=$4
 
 times_per_job=20
 
@@ -33,7 +34,7 @@ for path1 in "${directories[@]}"; do
     export fullpath2=$path2/$i
     if [ $batch == 1 ]; then
       if [ $n_times == 0 ]; then 
-        job=$(echo job_copy_from_dcache_"$job_num".sh)
+        job=$(echo job_copy_from_dcache_"$job_name"_"$job_num".sh)
         echo cd $dir > $job
         echo source /vols/grid/cms/setup.sh > $job
         echo "export SCRAM_ARCH=slc6_amd64_gcc481" >> $job
