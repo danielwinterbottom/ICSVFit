@@ -9,7 +9,7 @@ export path2=$2
 export batch=$3
 export job_name=$4
 
-times_per_job=20
+times_per_job=100
 
 date_names=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
     export most_recent=0
@@ -25,10 +25,14 @@ directories=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $most_recent_string))
 export count=0
 n_times=0
 job_num=0
+echo $most_recent_string
 for path1 in "${directories[@]}"; do
-  filelist=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls /$path1/ | grep .tar | rev | cut -d"/" -f1 | rev))
+  filelist=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls /$path1/ | grep tar | rev | cut -d"/" -f1 | rev))
   export dir=$(pwd)
+  list=$(ls $path2/svfit_output*.tar)
   for i in "${filelist[@]}"; do
+    echo $i >> blah.txt
+    if [[ $list  == *"$i"* ]]; then continue; fi #if already in directory then skip
     ((count++))
     export fullpath1=srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms//$path1/$i
     export fullpath2=$path2/$i
@@ -57,9 +61,10 @@ for path1 in "${directories[@]}"; do
     fi
   done
 done
-if [ $batch == 1 ]; then
+if [ $batch == 1 -a $count != 0 ]; then
   chmod 755 $job
   qsub -q hep.q -l h_rt=0:180:0 -cwd $job
 fi 
   echo Total files copied: $count
+
 

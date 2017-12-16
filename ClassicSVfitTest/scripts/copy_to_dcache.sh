@@ -1,15 +1,14 @@
 #!/bin/bash
 # example usage:
-# ./scripts/copy_from_dcache.sh path1 path2
-# path1 is the path to the dcache directroy containing the outputs - this is the directroy before the 'dated' directory e.g '/store/user/dwinterb/SVFit/Nov25_SVFitMETCL_DOWN/' (which contains subdirectory(s) such as '171127_200039/')
-# path2 is the path to which the files will be copied
-# The script will determine the latest subdirectory of path1 by comparing the dates/times in the directory name and then search all the subdirectroies (e.g 0000/ 0001/ 0002/ ...) for outputs and copy them to path2
+# ./scripts/copy_to_dcache.sh path1 path2
+# path1 is the path to the directory containing the .root files to be copied
+# path2 is the path to the dcahe directory
 export path1=$1
 export path2=$2
 export batch=$3
 export job_name=$4
 
-times_per_job=20
+times_per_job=40
 
 export count=0
 n_times=0
@@ -17,7 +16,7 @@ job_num=0
   export dir=$(pwd)
   for i in $(ls $path1/ | grep input*.root); do
     ((count++))
-    export fullpath2=srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms//$path2/$i
+    export fullpath2=srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms/$path2/$i
     export fullpath1=$path1/$i
     if [ $batch == 1 ]; then
       if [ $n_times == 0 ]; then 
@@ -34,7 +33,7 @@ job_num=0
         ((n_times++))
         if [ $n_times == $times_per_job ]; then
            chmod 755 $job
-           #qsub -q hep.q -l h_rt=0:180:0 -cwd $job
+           qsub -q hep.q -l h_rt=0:180:0 -cwd $job
            ((job_num++))
            n_times=0
         fi
@@ -45,7 +44,7 @@ job_num=0
 done
 if [ $batch == 1 ]; then
   chmod 755 $job
-  #qsub -q hep.q -l h_rt=0:180:0 -cwd $job
+  qsub -q hep.q -l h_rt=0:180:0 -cwd $job
 fi 
   echo Total files copied: $count
 
