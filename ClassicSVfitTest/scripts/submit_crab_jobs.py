@@ -8,7 +8,7 @@ from optparse import OptionParser
 import math
 import fnmatch
 
-CRAB = 'Dec11_SVFit'
+CRAB = 'Dec29_SVFit'
 
 parser = OptionParser()
 
@@ -26,8 +26,6 @@ if not options.folder:
 
 
 subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','EFAKE0PI_UP','EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN']
-
-subdirs = ['TSCALE1PI_DOWN','METUNCL_UP']
 
 
 for subdir in subdirs:
@@ -70,4 +68,4 @@ for subdir in subdirs:
   dcache_dir = 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/%s/%s/' % (options.dcache_dir,subdir)
   name = '%s%s' % (CRAB,subdir)
   submit_command = './scripts/crabsub.py -i %s --name %s --area %s --file_prefix %s' % (folder,name,CRAB,dcache_dir)
-  #os.system(submit_command)
+  os.system(submit_command)

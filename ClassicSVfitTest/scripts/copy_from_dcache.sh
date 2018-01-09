@@ -9,7 +9,7 @@ export path2=$2
 export batch=$3
 export job_name=$4
 
-times_per_job=100
+times_per_job=20
 
 date_names=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
     export most_recent=0

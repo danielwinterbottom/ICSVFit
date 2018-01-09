@@ -48,3 +48,20 @@ cd ICSVFit/ClassicSVfitTest
 ./scripts/batch_sub.py -i <local-folder> --submit --jobsub='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 ```
 Generates jobs for the input files in <local-folder> and submits them to the IC short queue. The output files are written into <local-folder>
+
+## Alternative instructions which tend to be quicker
+copy svfit inputs to batch using:
+
+./scripts/copy_to_dcache.sh path/to/svfit/inputs path/to/dcache/dir 1 job_name 
+
+or if running also for the systematic shifted inputs do:
+
+dirs=('' 'TSCALE_UP' 'TSCALE_DOWN' 'TSCALE0PI_UP' 'TSCALE0PI_DOWN' 'TSCALE1PI_UP' 'TSCALE1PI_DOWN' 'TSCALE3PRONG_UP' 'TSCALE3PRONG_DOWN' 'EFAKE0PI_UP' 'EFAKE0PI_DOWN' 'EFAKE1PI_UP' 'EFAKE1PI_DOWN' 'MUFAKE0PI_UP' 'MUFAKE0PI_DOWN' 'MUFAKE1PI_UP' 'MUFAKE1PI_DOWN' 'METUNCL_UP' 'METUNCL_DOWN' 'METCL_UP' 'METCL_DOWN')
+
+for i in "${dirs[@]}"; do ./scripts/copy_to_dcache.sh /path/to/svfit/inputs/$i path/to/dcache/dir/$i 1 $i; done
+
+then submit the jobs using:
+
+python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Dec29_SVFit/ --dcache_dir=/store/user/dwinterb/Dec29_SVFit/ --copy
+
+the --copy option will check that the svfit input files exist on the dcache directory and then copy them over if they don't so is only needed to make sure all the inputs were copied correctly in the first step
