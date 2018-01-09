@@ -43,8 +43,10 @@ job_num=0
     fi
 done
 if [ $batch == 1 ]; then
-  chmod 755 $job
-  qsub -q hep.q -l h_rt=0:180:0 -cwd $job
+  if [ -z "$job" ]; then 
+    chmod 755 $job
+    qsub -q hep.q -l h_rt=0:180:0 -cwd $job
+  fi
 fi 
   echo Total files copied: $count
 
