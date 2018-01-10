@@ -65,3 +65,15 @@ then submit the jobs using:
 python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Dec29_SVFit/ --dcache_dir=/store/user/dwinterb/Dec29_SVFit/ --copy
 
 the --copy option will check that the svfit input files exist on the dcache directory and then copy them over if they don't so is only needed to make sure all the inputs were copied correctly in the first step
+
+Once the job have finished the .tar files can be copied using the command:
+
+ python scripts/copy_crab_outputs.py --folder=/path/to/target/directory/ --dcache_dir=/path/to/dcache/output/directory/
+
+which assumes the target directroy has the corret subdirectory structure for the systematic shifted folders. This script also check if the .tar files exists before copying it over so exisiting files won't be overwritten.
+
+The following script can be use to check that the number of .tar output fils matched the number of SV fit input files if they are stored in the same folder:
+
+./scripts/check_copied.sh /vols/cms/dw515/Offline/output/SM/Dec29_SVFit/
+
+This script will also unntar the output files. If the numbers don't match you shoud re-run the copying script.
