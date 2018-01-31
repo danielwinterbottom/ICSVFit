@@ -40,6 +40,8 @@ cd ICSVFit/ClassicSVfitTest
 ```
 The file_prefix needs to have the full path to the file i.e 'root://gfe02.grid.hep.ph.ic.ac.uk:1097' before the '/store/user/...'
 
+Using the option --M=X will add a constrain on mass to the SV fit computation e.g --M=125.0
+
 Can then check on the status of jobs with the standard crab commands, once the jobs are done copy the output files back over to the analysis area and untar (crab getoutput should work, then recursive untar) 
 
 In addition to submitting crab jobs, we can also submit them to the batch, for example if we only need to run a very small number of jobs. For example:
@@ -65,6 +67,9 @@ then submit the jobs using:
 python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Dec29_SVFit/ --dcache_dir=/store/user/dwinterb/Dec29_SVFit/ --copy
 
 the --copy option will check that the svfit input files exist on the dcache directory and then copy them over if they don't so is only needed to make sure all the inputs were copied correctly in the first step
+
+Using the option --M=X will add a constrain on mass to the SV fit computation e.
+g --M=125.0
 
 Once the job have finished the .tar files can be copied using the command:
 
