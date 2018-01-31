@@ -8,7 +8,7 @@ from optparse import OptionParser
 import math
 import fnmatch
 
-CRAB = 'Dec29_SVFit'
+CRAB = 'Jan30_SVFit'
 
 parser = OptionParser()
 
@@ -18,8 +18,13 @@ parser.add_option("--dcache_dir", dest = "dcache_dir",
                   help="Specify folder that contains the output to be hadded")
 parser.add_option("--copy", dest="copy", action='store_true', default=False,
                   help="Copy inputs to dcache")
+parser.add_option("--M", dest = "M", default="",
+                  help="If specified hard constrain the di-tau mass by set value.")
 
 (options,args) = parser.parse_args()
+
+mass_constraint=''
+if options.M != '': mass_contraint = '--M=%s' % options.M
 
 if not options.folder:
   parser.error('No folder specified')
@@ -67,5 +72,5 @@ for subdir in subdirs:
   print 'Submitting jobs..'
   dcache_dir = 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/%s/%s/' % (options.dcache_dir,subdir)
   name = '%s%s' % (CRAB,subdir)
-  submit_command = './scripts/crabsub.py -i %s --name %s --area %s --file_prefix %s' % (folder,name,CRAB,dcache_dir)
+  submit_command = './scripts/crabsub.py -i %s --name %s --area %s --file_prefix %s %s' % (folder,name,CRAB,dcache_dir, mass_constraint)
   os.system(submit_command)

@@ -17,14 +17,28 @@ using namespace classic_svFit;
 
 int main(int argc, char* argv[]){
 
-  if (argc != 2 && argc != 3){
-    std::cerr << "Need 1 or 2 args: <input> (<file_prefix>)" << std::endl;
+  if (argc !=2 && argc != 3 && argc !=4){
+    std::cerr << "Need 1,2 or 3 args: <input> <file_prefix> (--M=<mass_constraint>)" << std::endl;
     exit(1);
   }
 
-
   std::string file_prefix = "";
-  if(argc==3) file_prefix = argv[2];
+  double mass_constraint = -1;
+  bool constrainM = false;
+  if(argc==3){
+    std::string arg = argv[2];
+    if(arg.find("--M=") != std::string::npos){
+     constrainM = true;
+     mass_constraint=std::stod(arg.erase(0,4));
+    } else file_prefix = argv[2];
+  }
+  if(argc==4){
+    file_prefix = argv[2];
+    constrainM = true;
+    std::string arg = argv[3];
+    if(arg.find("--M=") != std::string::npos) mass_constraint=std::stod(arg.erase(0,4));
+  }
+
   std::string input_file = argv[1];
   std::string output_file = input_file;
 
@@ -125,6 +139,8 @@ int main(int argc, char* argv[]){
     int verbosity = 0;
     ClassicSVfit svFitAlgo(verbosity);
     svFitAlgo.addLogM_fixed(true, kappa);
+    // add constrain on mass if option is specified
+    if(constrainM) svFitAlgo.setDiTauMassConstraint(mass_constraint);
     svFitAlgo.integrate(measuredTauLeptons, measuredMETx, measuredMETy, covMET);
     bool isValidSolution = svFitAlgo.isValidSolution();
 

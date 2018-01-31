@@ -52,11 +52,16 @@ parser.add_option("--area",dest="crab_area",
                     help="Crab area name")
 parser.add_option("--file_prefix", dest="file_prefix",
                     help="Location of input files")
+parser.add_option("--M", dest = "M", default="",
+                  help="If specified hard constrain the di-tau mass by set value.")
 
 
 (options, args) = parser.parse_args()
 task_name = options.task_name#"gridsvfittest3"
 crab_area = options.crab_area#"Nov292"
+
+mass_constraint=''
+if options.M != '': mass_contraint = '--M=%s' % options.M
 
 from CRABAPI.RawCommand import crabCommand
 from httplib import HTTPException
@@ -76,7 +81,7 @@ for filename in os.listdir(root) :
     svfit_files.add(fullfile)
     outfile = fullfile.replace('input.root','output.root')
     outscript.write('\nif [ $1 -eq %i ]; then\n'%jobs)
-    outscript.write("  ./ClassicSVFitTest " +os.path.basename(fullfile) + " " + options.file_prefix + '\n')
+    outscript.write("  ./ClassicSVFitTest " +os.path.basename(fullfile) + " " + options.file_prefix + "  " + mass_constraint + '\n')
     outscript.write('fi')
 outscript.write(CRAB_POSTFIX)
 outscript.close()
