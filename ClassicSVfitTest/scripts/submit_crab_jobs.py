@@ -24,7 +24,7 @@ parser.add_option("--M", dest = "M", default="",
 (options,args) = parser.parse_args()
 
 mass_constraint=''
-if options.M != '': mass_contraint = '--M=%s' % options.M
+if options.M != '': mass_constraint = '--M=%s' % options.M
 
 if not options.folder:
   parser.error('No folder specified')

@@ -61,7 +61,7 @@ task_name = options.task_name#"gridsvfittest3"
 crab_area = options.crab_area#"Nov292"
 
 mass_constraint=''
-if options.M != '': mass_contraint = '--M=%s' % options.M
+if options.M != '': mass_constraint = '--M=%s' % options.M
 
 from CRABAPI.RawCommand import crabCommand
 from httplib import HTTPException
