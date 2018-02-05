@@ -29,6 +29,8 @@ parser.add_option("--submit", dest="submit", action='store_true', default=False,
 
 parser.add_option("--verify", dest="verify", action='store_true', default=False,
                   help="Run verification of output, if --submit is also set then only jobs failing verification will be resubmitted.")
+parser.add_option("--M", dest = "M", default="",
+                  help="If specified hard constrain the di-tau mass by set value.")
 
 
 (options, args) = parser.parse_args()
@@ -36,6 +38,9 @@ parser.add_option("--verify", dest="verify", action='store_true', default=False,
 
 if options.wrap: JOBWRAPPER=options.wrap
 if options.sub: 	JOBSUBMIT=options.sub
+
+mass_constraint=''
+if options.M != '': mass_constraint = '--M=%s' % options.M
 
 ROOT.gSystem.Load("libFWCoreFWLite")
 ROOT.gSystem.Load("libUserCodeICHiggsTauTau")
@@ -76,7 +81,7 @@ for root, dirnames, filenames in os.walk(options.input):
 
     if submitTask and options.submit:
       job = fullfile.replace('_input.root','.sh')
-      os.system('%(JOBWRAPPER)s "ClassicSVFitTest %(fullfile)s" %(job)s' % vars())
+      os.system('%(JOBWRAPPER)s "ClassicSVFitTest %(fullfile)s %(mass_constraint)s" %(job)s' % vars())
       os.system('%(JOBSUBMIT)s %(job)s' % vars())
 
 print 'TOTAL SVFIT FILES:    '+str(filesSeen)
