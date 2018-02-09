@@ -77,8 +77,8 @@ Once the job have finished the .tar files can be copied using the command:
 
 which assumes the target directroy has the corret subdirectory structure for the systematic shifted folders. This script also check if the .tar files exists before copying it over so exisiting files won't be overwritten.
 
-The following script can be use to check that the number of .tar output fils matched the number of SV fit input files if they are stored in the same folder:
+The following script can be used to check that the number of .tar output fils matched the number of SV fit input files:
 
-./scripts/check_copied.sh /vols/cms/dw515/Offline/output/SM/Dec29_SVFit/
+./scripts/check_copied.sh /path/to/input/files/ /path/to/output/tarfiles/
 
 This script will also unntar the output files. If the numbers don't match you shoud re-run the copying script.
