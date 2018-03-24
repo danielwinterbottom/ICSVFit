@@ -29,10 +29,13 @@ echo $most_recent_string
 for path1 in "${directories[@]}"; do
   filelist=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls /$path1/ | grep tar | rev | cut -d"/" -f1 | rev))
   export dir=$(pwd)
-  list=$(ls $path2/svfit_output*.tar)
+  none_in_dir=1
+  if [[ $(ls -a $path2 | grep svfit_output | grep .tar) != "" ]]; then 
+    none_in_dir=0;
+    list=$(ls $path2/svfit_output*.tar)
+  fi
   for i in "${filelist[@]}"; do
-    echo $i >> blah.txt
-    if [[ $list  == *"$i"* ]]; then continue; fi #if already in directory then skip
+    if [[ $list  == *"$i"* ]] && [ $none_in_dir == 0 ] ; then continue; fi #if already in directory then skip
     ((count++))
     export fullpath1=srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms//$path1/$i
     export fullpath2=$path2/$i
