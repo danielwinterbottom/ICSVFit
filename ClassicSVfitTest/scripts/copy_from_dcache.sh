@@ -15,11 +15,12 @@ date_names=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
     export most_recent=0
     for k in "${date_names[@]}"; do
       date=$(echo $k | rev | cut -d"/" -f1 | rev | cut -d"_" -f1)$(echo $k | rev | cut -d"/" -f1 | rev | cut -d"_" -f2-) 
-      if [[ $date > $most_recent ]]; then
+      if [[ $date > $most_recent ]]; then 
         export most_recent_string=$k
         most_recent=$date
       fi
 done
+
 
 directories=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $most_recent_string))
 export count=0
