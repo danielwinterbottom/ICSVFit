@@ -71,13 +71,14 @@ copy svfit inputs to dcache using batch:
 
 or if running also for the systematic shifted inputs do:
 
-dirs=('' 'TSCALE_UP' 'TSCALE_DOWN' 'TSCALE0PI_UP' 'TSCALE0PI_DOWN' 'TSCALE1PI_UP' 'TSCALE1PI_DOWN' 'TSCALE3PRONG_UP' 'TSCALE3PRONG_DOWN' 'EFAKE0PI_UP' 'EFAKE0PI_DOWN' 'EFAKE1PI_UP' 'EFAKE1PI_DOWN' 'MUFAKE0PI_UP' 'MUFAKE0PI_DOWN' 'MUFAKE1PI_UP' 'MUFAKE1PI_DOWN' 'METUNCL_UP' 'METUNCL_DOWN' 'METCL_UP' 'METCL_DOWN' 'MUSCALE_UP' 'MUSCALE_DOWN' 'ESCALE_UP' 'ESCALE_DOWN')
+dirs=("" "TSCALE_DOWN" "TSCALE_UP" "TSCALE0PI_UP" "TSCALE0PI_DOWN" "TSCALE1PI_UP" "TSCALE1PI_DOWN" "TSCALE3PRONG_UP" "TSCALE3PRONG_DOWN" "JES_UP" "JES_DOWN" "BTAG_UP" "BTAG_DOWN" "BFAKE_UP" "BFAKE_DOWN" "MET_SCALE_UP" "MET_SCALE_DOWN" "MET_RES_UP" "MET_RES_DOWN" "EFAKE0PI_UP" "EFAKE0PI_DOWN" "EFAKE1PI_UP" "EFAKE1PI_DOWN" "MUFAKE0PI_UP" "MUFAKE0PI_DOWN" "MUFAKE1PI_UP" "MUFAKE1PI_DOWN" "METUNCL_UP" "METUNCL_DOWN" "METCL_UP" "METCL_DOWN" "MUSCALE_UP" "MUSCALE_DOWN" "ESCALE_UP" "ESCALE_DOWN" "JESFULL_DOWN" "JESFULL_UP" "JESCENT_UP" "JESCENT_DOWN" "JESHF_UP" "JESHF_DOWN" "JESRBAL_UP" "JESRBAL_DOWN" "MET_SCALE_NJETS0_DOWN" "MET_SCALE_NJETS0_UP" "MET_SCALE_NJETS1_DOWN" "MET_SCALE_NJETS1_UP" "MET_SCALE_NJETS2_DOWN" "MET_SCALE_NJETS2_UP" "MET_RES_NJETS0_DOWN" "MET_RES_NJETS0_UP" "MET_RES_NJETS1_DOWN" "MET_RES_NJETS1_UP" "MET_RES_NJETS2_DOWN" "MET_RES_NJETS2_UP")
+
 
 for i in "${dirs[@]}"; do ./scripts/copy_to_dcache.sh /path/to/svfit/inputs/$i path/to/dcache/dir/$i 1 $i; done
 
 then submit the jobs using:
 
-python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Dec29_SVFit/ --dcache_dir=/store/user/dwinterb/Dec29_SVFit/ --copy
+python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Jun15_SVFit/ --dcache_dir=/store/user/dwinterb/Jun15_SVFit/ --copy
 
 the --copy option will check that the svfit input files exist on the dcache directory and then copy them over if they don't so is only needed to make sure all the inputs were copied correctly in the first step
 
