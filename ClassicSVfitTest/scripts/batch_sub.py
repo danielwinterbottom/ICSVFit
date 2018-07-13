@@ -52,7 +52,7 @@ filesSeen = 0
 filesVerified = 0
 
 para_out=''
-perJob=5
+perJob=1
 calls=0
 parajob_name='parajob%s.sh' % options.jobname
 if options.parajobs:
