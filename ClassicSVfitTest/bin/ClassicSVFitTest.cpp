@@ -13,11 +13,21 @@
 #include "TSystem.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
+std::pair<double,double> SplitString(std::string instring){
+    std::vector<std::string> outstrings;
+    std::stringstream ss(instring);
+    std::string splitstring;
+    while(std::getline(ss, splitstring, ',')) outstrings.push_back(splitstring); 
+    return std::make_pair(std::stod(outstrings[0]),std::stod(outstrings[1]));
+}
+
+
 using namespace classic_svFit;
 
 int main(int argc, char* argv[]){
 
   if (argc !=2 && argc != 3 && argc !=4){
+    //std::cerr << "Need 1,2 or 3 args: <input> <file_prefix> (--M=<mass_constraint>)" << std::endl;
     std::cerr << "Need 1,2 or 3 args: <input> <file_prefix> (--M=<mass_constraint>)" << std::endl;
     exit(1);
   }
@@ -25,19 +35,40 @@ int main(int argc, char* argv[]){
   std::string file_prefix = "";
   double mass_constraint = -1;
   bool constrainM = false;
+  int npercall=-1;
+  int offset=-1;
   if(argc==3){
     std::string arg = argv[2];
-    if(arg.find("--M=") != std::string::npos){
-     constrainM = true;
-     mass_constraint=std::stod(arg.erase(0,4));
+    if(arg.find("--npercall_offset=") != std::string::npos){
+     std::pair<double,double> nper_offset = SplitString(arg.erase(0,18));
+     npercall = (int) nper_offset.first;
+     offset = (int) nper_offset.second;
     } else file_prefix = argv[2];
   }
   if(argc==4){
     file_prefix = argv[2];
-    constrainM = true;
     std::string arg = argv[3];
-    if(arg.find("--M=") != std::string::npos) mass_constraint=std::stod(arg.erase(0,4));
+    if(arg.find("--npercall_offset=") != std::string::npos) {
+      std::pair<double,double> nper_offset = SplitString(arg.erase(0,18));
+      npercall = (int) nper_offset.first;
+      offset = (int) nper_offset.second;
+    }
   }
+
+
+  //if(argc==3){
+  //  std::string arg = argv[2];
+  //  if(arg.find("--M=") != std::string::npos){
+  //   constrainM = true;
+  //   mass_constraint=std::stod(arg.erase(0,4));
+  //  } else file_prefix = argv[2];
+  //}
+  //if(argc==4){
+  //  file_prefix = argv[2];
+  //  constrainM = true;
+  //  std::string arg = argv[3];
+  //  if(arg.find("--M=") != std::string::npos) mass_constraint=std::stod(arg.erase(0,4));
+  //}
 
   std::string input_file = argv[1];
   std::string output_file = input_file;
@@ -59,6 +90,20 @@ int main(int argc, char* argv[]){
     std::cerr << "The input tree could not be found" << std::endl;
     return 1;
   }
+
+  unsigned mini=0;
+  unsigned maxi=itree->GetEntries();
+
+  if(npercall>-1 && offset>-1){
+    mini=npercall*offset;
+    maxi=npercall*(offset+1);
+    maxi = maxi > itree->GetEntries() ? itree->GetEntries() : maxi;
+    std::size_t pos = output_file.find("output.root"); 
+    output_file.replace(pos, std::string("output.root").length(), std::to_string(offset)+"_output.root"); 
+  }
+
+  if (mini > itree->GetEntries()) return 0;
+
 
   ic::Candidate *c1 = NULL;
   ic::Candidate *c2 = NULL;
@@ -96,8 +141,8 @@ int main(int argc, char* argv[]){
   otree->Branch("svfit_mass", &svfit_mass);
   otree->Branch("svfit_transverse_mass", &svfit_transverse_mass);
   otree->Branch("svfit_vector", &svfit_vector);
-  
-  for (unsigned i = 0; i < itree->GetEntries(); ++i) {
+
+  for (unsigned i = mini; i < maxi; ++i) {
     itree->GetEntry(i);
     std::pair<ic::Candidate, std::vector<double>> result;
     
@@ -111,6 +156,14 @@ int main(int argc, char* argv[]){
     covMET(1,0) = met->yx_sig();
     covMET(0,1) = met->xy_sig();
     covMET(1,1) = met->yy_sig();
+    //std::cout << "event = " << event << std::endl;
+    //std::cout << "MET inputs: " << std::endl;
+    //std::cout << "covMET(0,0) = " << covMET(0,0) << std::endl; 
+    //std::cout << "covMET(1,0) = " << covMET(1,0) << std::endl;
+    //std::cout << "covMET(0,1) = " << covMET(0,1) << std::endl;
+    //std::cout << "covMET(1,1) = " << covMET(1,1) << std::endl;
+    //std::cout << "measuredMETx = " << measuredMETx << std::endl;
+    //std::cout << "measuredMETy = " << measuredMETy << std::endl;
 
     double kappa = 5.;
 
@@ -123,6 +176,11 @@ int main(int argc, char* argv[]){
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToElecDecay, c1->pt(), c1->eta(), c1->phi(), 0.000511));
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToMuDecay, c2->pt(), c2->eta(), c2->phi(), 0.10566));
       kappa = 3.;
+      //std::cout << "electron input:" << std::endl;
+      //std::cout << "pT = " << c1->pt() << " eta = " << c1->eta() << " phi = " << c1->phi() << " mass = " << 0.000511 << std::endl;
+      //std::cout << "muon input:" << std::endl;
+      //std::cout << "pT = " << c2->pt() << " eta = " << c2->eta() << " phi = " << c2->phi() << " mass = " << 0.105658 << std::endl;
+      //std::cout << "kappa = " << kappa << std::endl;
     } else if (mode == 2){
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToElecDecay, c1->pt(), c1->eta(), c1->phi(), 0.000511));
       measuredTauLeptons.push_back(MeasuredTauLepton(MeasuredTauLepton::kTauToHadDecay,  c2->pt(), c2->eta(), c2->phi(), c2->M(), dm2));
@@ -163,7 +221,7 @@ int main(int argc, char* argv[]){
 
   input->Close();
   delete input;
-
+  std::cout << "Finished Processing." << std::endl;
   return 0;
 }
 

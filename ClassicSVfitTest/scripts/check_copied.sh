@@ -14,9 +14,9 @@ for i in "${dirs[@]}"; do
 
   if [ $Ninputs == $(ls -1 svfit_output*.tar | wc -l) ]; then 
     echo "inputs = outputs for subdirectory: "$i
-    for j in $(ls *.tar); do
-      tar -xvf $j
-    done
+  #  for j in $(ls *.tar); do
+  #    tar -xvf $j
+  #  done
 
   else 
     echo "inputs != outputs for subdirectory: "$i

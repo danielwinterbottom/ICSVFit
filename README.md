@@ -78,7 +78,7 @@ for i in "${dirs[@]}"; do ./scripts/copy_to_dcache.sh /path/to/svfit/inputs/$i p
 
 then submit the jobs using:
 
-python scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Jun15_SVFit/ --dcache_dir=/store/user/dwinterb/Jun15_SVFit/ --copy
+python -u scripts/submit_crab_jobs.py --folder=/vols/cms/dw515/Offline/output/SM/Aug14_SVFit/ --dcache_dir=/store/user/dwinterb/Aug14_SVFit/ --copy
 
 the --copy option will check that the svfit input files exist on the dcache directory and then copy them over if they don't so is only needed to make sure all the inputs were copied correctly in the first step
 
@@ -96,3 +96,29 @@ The following script can be used to check that the number of .tar output fils ma
 ./scripts/check_copied.sh /path/to/input/files/ /path/to/output/tarfiles/
 
 This script will also unntar the output files. If the numbers don't match you shoud re-run the copying script.
+
+
+## latest instructions to run SV fit efficienctly (follow these ones!)
+
+in the IC analysis code HiggsTauTau/scripts directory there are scripts named "hadd_smsummer17_svfit.py" and "hadd_smsummer16_svfit.py". These scripts combine SV-fit input files for each sample into 1 file. Copying over larger numbers of files to the dcache area is very slow so it is better to run these scripts initially to reduce the number of files. Run these scripts using:
+
+  `./scripts/hadd_smsummer17_svfit.py --folder=/vols/cms/dw515/Offline/output/SM/Oct24_2017_SVFit/`
+
+Next create a directory on your dcache area where you would like to copy the svfit input files to e.g:
+  `mkdir SVFit_inputs`
+cd into that directroy:
+  `cd SVFit_inputs`
+You then need to make a subdirectory for each systematic shift, use a command such as:
+
+  `mkdir TSCALE_DOWN; mkdir TSCALE_UP; mkdir TSCALE0PI_UP; mkdir TSCALE0PI_DOWN; mkdir TSCALE1PI_UP; mkdir TSCALE1PI_DOWN; mkdir TSCALE3PRONG_UP; mkdir TSCALE3PRONG_DOWN; mkdir JES_UP; mkdir JES_DOWN; mkdir MET_SCALE_UP; mkdir MET_SCALE_DOWN; mkdir MET_RES_UP; mkdir MET_RES_DOWN; mkdir EFAKE0PI_UP; mkdir EFAKE0PI_DOWN; mkdir EFAKE1PI_UP; mkdir EFAKE1PI_DOWN; mkdir MUFAKE0PI_UP; mkdir MUFAKE0PI_DOWN; mkdir MUFAKE1PI_UP; mkdir MUFAKE1PI_DOWN; mkdir METUNCL_UP; mkdir METUNCL_DOWN; mkdir ESCALE_UP; mkdir ESCALE_DOWN; mkdir JESFULL_DOWN; mkdir JESFULL_UP; mkdir JESCENT_UP; mkdir JESCENT_DOWN; mkdir JESHF_UP; mkdir JESHF_DOWN; mkdir JESRBAL_UP; mkdir JESRBAL_DOWN; mkdir JESRSAMP_UP; mkdir JESRSAMP_DOWN; mkdir JES_CORR_UP; mkdir JES_CORR_DOWN; mkdir JES_UNCORR_UP; mkdir JES_UNCORR_DOWN; mkdir JESBBEE1_DOWN; mkdir JESBBEE1_UP; mkdir JESBBEE1_UNCORR_DOWN; mkdir JESBBEE1_UNCORR_UP; mkdir JESBBEE1_CORR_DOWN; mkdir JESBBEE1_CORR_UP; mkdir JESEE2_DOWN; mkdir JESEE2_UP; mkdir JESEE2_UNCORR_DOWN; mkdir JESEE2_UNCORR_UP; mkdir JESEE2_CORR_DOWN; mkdir JESEE2_CORR_UP;`
+
+copy inputs and submit jobs using this script:
+
+  `python scripts/submit_crab_jobs_new.py --folder=/vols/cms/dw515/Offline/output/SM/Oct01_SVFit/ --dcache_dir=/store/user/dwinterb/Oct01_SVFit/ --crab=Oct01_SVFit --copy`
+
+after the jobs have finished copy the output over using:
+  `nohup python -u scripts/copy_crab_outputs.py --folder=/vols/cms/dw515/Offline/output/SM/Oct01_SVFit/ --dcache_dir=/store/user/dwinterb/SVFit/ --crab=Oct01_SVFit`
+
+untar the files using:
+  `scripts/CheckTar.sh /vols/cms/dw515/Offline/output/SM/Oct01_SVFit/`
+this script will also print the total number of files untarred, I suggest checking that this number matches the number of task submitted. If it does not match then some jobs may not have been copied over correctly and so you should run the copy_crab_outputs.py script again

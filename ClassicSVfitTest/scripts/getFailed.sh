@@ -38,7 +38,7 @@ for i in $directory/*; do
     if [ $resubmit == 1 ]; then
       if [[ "$(crab status $i/ | grep FAILED)" != "" || "$(crab status $i/ | grep failed)" != "" ]]; then
         echo Resubmitting failed jobs for: $i
-        crab resubmit $i >> resubmit.txt
+        crab resubmit  $i >> resubmit.txt
       fi
     fi
   fi

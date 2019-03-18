@@ -59,8 +59,16 @@ if options.parajobs:
   os.system('%(JOBWRAPPER)s "%(para_out)s" %(parajob_name)s' % vars())
   os.system("sed -i '/export SCRAM_ARCH/ i\source /vols/grid/cms/setup.sh' %s"%parajob_name) 
 
+subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','JESRSAMP_UP','JESRSAMP_DOWN','JES_CORR_UP','JES_CORR_DOWN','JES_UNCORR_UP','JES_UNCORR_DOWN','JESFULL_CORR_DOWN','JESFULL_CORR_UP','JESCENT_CORR_UP','JESCENT_CORR_DOWN','JESHF_CORR_UP','JESHF_CORR_DOWN','JESFULL_UNCORR_DOWN','JESFULL_UNCORR_UP','JESCENT_UNCORR_UP','JESCENT_UNCORR_DOWN','JESHF_UNCORR_UP','JESHF_UNCORR_DOWN','JESBBEE1_DOWN','JESBBEE1_UP','JESBBEE1_UNCORR_DOWN','JESBBEE1_UNCORR_UP','JESBBEE1_CORR_DOWN','JESBBEE1_CORR_UP','JESEE2_DOWN','JESEE2_UP','JESEE2_UNCORR_DOWN','JESEE2_UNCORR_UP','JESEE2_CORR_DOWN','JESEE2_CORR_UP']
 
-for root, dirnames, filenames in os.walk(options.input):
+
+for root, dirnames, filenames in os.walk(options.input): 
+  print root
+  if subdirs:
+    #if True in [x in root for x in subdirs]: continue
+    #if not ('UP' in root or 'Down' in root): continue
+    if True not in [x in root for x in subdirs]: continue
+  print 'processing', root
   for filename in fnmatch.filter(filenames, '*svfit_*_input.root'):
     if not any('_'+chan+'_' in filename for chan in channels): continue
     fullfile = os.path.join(root, filename)
@@ -93,7 +101,8 @@ for root, dirnames, filenames in os.walk(options.input):
     if submitTask and options.submit:
       if not options.parajobs:
         job = fullfile.replace('_input.root','.sh')
-        os.system('%(JOBWRAPPER)s "ClassicSVFitTest %(fullfile)s  %(job)s' % vars())
+        log = fullfile.replace('_input.root','.log')
+        os.system('%(JOBWRAPPER)s "ClassicSVFitTest %(fullfile)s &> %(log)s"  %(job)s' % vars())
         os.system('%(JOBSUBMIT)s %(job)s' % vars())
       else:
         if calls % perJob == 0:
