@@ -118,7 +118,6 @@ int main(int argc, char* argv[]){
   double svfit_mass;
   double svfit_mass_err;
   double svfit_transverse_mass;
-  double svfit_transverse_mass_err;
   ic::Candidate *svfit_vector = NULL;
 
   TH1::AddDirectory(kFALSE);
@@ -143,7 +142,6 @@ int main(int argc, char* argv[]){
   otree->Branch("svfit_mass", &svfit_mass);
   otree->Branch("svfit_mass_err", &svfit_mass_err);
   otree->Branch("svfit_transverse_mass", &svfit_transverse_mass);
-  otree->Branch("svfit_transverse_mass_err", &svfit_transverse_mass_err);
   otree->Branch("svfit_vector", &svfit_vector);
 
   for (unsigned i = mini; i < maxi; ++i) {
@@ -210,13 +208,11 @@ int main(int argc, char* argv[]){
       svfit_mass = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getMass();
       svfit_mass_err = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getMassErr();
       svfit_transverse_mass = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getTransverseMass();
-      svfit_transverse_mass_err = static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getTransverseMassErr();
      svfit_vector->set_vector((ROOT::Math::PtEtaPhiEVector)ROOT::Math::PtEtaPhiMVector(static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getPt(), static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getEta(), static_cast<DiTauSystemHistogramAdapter*>(svFitAlgo.getHistogramAdapter())->getPhi(), svfit_mass));
     } else {
       svfit_mass = -1;
       svfit_mass_err = -1;
       svfit_transverse_mass = -1;
-      svfit_transverse_mass_err = -1;
     }
     svfit_vector->set_id(objects_hash);
     std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
