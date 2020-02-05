@@ -3,8 +3,8 @@
 ## Setting Up Workarea
 setup CMSSW area
 ```
-cmsrel CMSSW_7_6_3
-cd CMSSW_7_6_3/src/
+cmsrel CMSSW_9_4_4
+cd CMSSW_9_4_4/src/
 cmsenv
 git cms-addpkg FWCore/Version
 ```
@@ -15,7 +15,7 @@ git clone https://github.com/SVfit/SVfitTF TauAnalysis/SVfitTF
 ```
 clone IC analysis framework
 ```
-git clone git@github.com:ajgilbert/ICHiggsTauTau.git UserCode/ICHiggsTauTau
+git clone git@github.com:danielwinterbottom/ICHiggsTauTau.git UserCode/ICHiggsTauTau
 ```
 
 clone ICSVFit package
@@ -122,3 +122,23 @@ after the jobs have finished copy the output over using:
 untar the files using:
   `scripts/CheckTar.sh /vols/cms/dw515/Offline/output/SM/Oct01_SVFit/`
 this script will also print the total number of files untarred, I suggest checking that this number matches the number of task submitted. If it does not match then some jobs may not have been copied over correctly and so you should run the copy_crab_outputs.py script again
+
+
+## Copying files from /vols/cms/ to dCache
+
+First create nominal output folder in dCache:
+
+    `uberftp sedsk53.grid.hep.ph.ic.ac.uk 'mkdir store/user/<user>/<dest>'`
+
+Then run copying script -- put -r creates the required subdirectories if needed.
+
+    `uberftp sedsk53.grid.hep.ph.ic.ac.uk 'put -r /vols/cms/<source>/ store/user/<user>/<dest>/'`
+
+## Copying files from dCache to /vols/cms/
+
+First create /vols/cms/ destination folder if required.
+    `mkdir /vols/cms/<dest>/`
+
+Then run uberftp command to copy from dCache:
+    `uberftp sedsk53.grid.hep.ph.ic.ac.uk ‘get -r store/user/<user>/<source>/ /vols/cms/<dest>/'`
+
