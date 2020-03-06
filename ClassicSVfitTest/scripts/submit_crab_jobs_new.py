@@ -35,7 +35,10 @@ if not options.folder:
   parser.error('No folder specified')
 
 
-subdirs = ['','TSCALE_DOWN','TSCALE_UP','TSCALE0PI_UP','TSCALE0PI_DOWN','TSCALE1PI_UP','TSCALE1PI_DOWN','TSCALE3PRONG_UP','TSCALE3PRONG_DOWN','JES_UP','JES_DOWN', 'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN','MET_SCALE_UP','MET_SCALE_DOWN','MET_RES_UP','MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE0PI_DOWN', 'EFAKE1PI_UP', 'EFAKE1PI_DOWN','MUFAKE0PI_UP','MUFAKE0PI_DOWN','MUFAKE1PI_UP','MUFAKE1PI_DOWN','METUNCL_UP','METUNCL_DOWN','METCL_UP','METCL_DOWN','MUSCALE_UP','MUSCALE_DOWN','ESCALE_UP','ESCALE_DOWN','JESFULL_DOWN','JESFULL_UP','JESCENT_UP','JESCENT_DOWN','JESHF_UP','JESHF_DOWN','JESRBAL_UP','JESRBAL_DOWN','JESRSAMP_UP','JESRSAMP_DOWN','MET_SCALE_NJETS0_DOWN','MET_SCALE_NJETS0_UP','MET_SCALE_NJETS1_DOWN','MET_SCALE_NJETS1_UP','MET_SCALE_NJETS2_DOWN','MET_SCALE_NJETS2_UP','MET_RES_NJETS0_DOWN','MET_RES_NJETS0_UP','MET_RES_NJETS1_DOWN','MET_RES_NJETS1_UP','MET_RES_NJETS2_DOWN','MET_RES_NJETS2_UP','JES_CORR_UP','JES_CORR_DOWN','JES_UNCORR_UP','JES_UNCORR_DOWN','JESFULL_CORR_DOWN','JESFULL_CORR_UP','JESCENT_CORR_UP','JESCENT_CORR_DOWN','JESHF_CORR_UP','JESHF_CORR_DOWN','JESFULL_UNCORR_DOWN','JESFULL_UNCORR_UP','JESCENT_UNCORR_UP','JESCENT_UNCORR_DOWN','JESHF_UNCORR_UP','JESHF_UNCORR_DOWN','JESBBEE1_DOWN','JESBBEE1_UP','JESBBEE1_UNCORR_DOWN','JESBBEE1_UNCORR_UP','JESBBEE1_CORR_DOWN','JESBBEE1_CORR_UP','JESEE2_DOWN','JESEE2_UP','JESEE2_UNCORR_DOWN','JESEE2_UNCORR_UP','JESEE2_CORR_DOWN','JESEE2_CORR_UP']
+#subdirs = ['', 'TSCALE0PI_UP', 'TSCALE0PI_DOWN', 'TSCALE1PI_UP', 'TSCALE1PI_DOWN', 'TSCALE3PRONG_UP', 'TSCALE3PRONG_DOWN', 'TSCALE3PRONG1PI0_UP', 'TSCALE3PRONG1PI0_DOWN', 'JER_UP', 'JER_DOWN', 'MET_SCALE_UP', 'MET_SCALE_DOWN', 'MET_RES_UP', 'MET_RES_DOWN', 'EFAKE0PI_DOWN', 'EFAKE0PI_UP', 'EFAKE1PI_DOWN', 'EFAKE1PI_UP', 'MUFAKE0PI_DOWN', 'MUFAKE0PI_UP', 'MUFAKE1PI_DOWN', 'MUFAKE1PI_UP', 'MUSCALE_DOWN', 'MUSCALE_UP', 'ESCALE_DOWN', 'ESCALE_UP', 'METUNCL_UP', 'METUNCL_DOWN', 'JESRBAL_DOWN', 'JESRBAL_UP', 'JESABS_DOWN', 'JESABS_UP', 'JESABS_YEAR_DOWN', 'JESABS_YEAR_UP', 'JESFLAV_DOWN', 'JESFLAV_UP', 'JESBBEC1_DOWN', 'JESBBEC1_UP', 'JESBBEC1_YEAR_DOWN', 'JESBBEC1_YEAR_UP', 'JESEC2_DOWN', 'JESEC2_UP', 'JESEC2_YEAR_DOWN', 'JESEC2_YEAR_UP', 'JESHF_DOWN', 'JESHF_UP', 'JESHF_YEAR_DOWN', 'JESHF_YEAR_UP', 'JESRELSAMP_YEAR_DOWN', 'JESRELSAMP_YEAR_UP']
+subdirs = ['MET_RES_DOWN', 'EFAKE0PI_UP', 'EFAKE1PI_DOWN',  'MUSCALE_UP', 'METUNCL_UP', 'JESRBAL_UP', 'JESFLAV_DOWN', 'JESBBEC1_YEAR_DOWN', 'JESEC2_DOWN', 'JESRELSAMP_YEAR_UP']
+
+subdirs=['MET_RES_DOWN']
 
 
 for subdir in subdirs:
@@ -61,10 +64,11 @@ for subdir in subdirs:
     os.system('python scripts/copy_svfit_input_files_to_dcache.py -i %s -d %s --checkExists' % (folder,dcache_dir)) 
   
   # check if all the inputs are on the dcache before submitting
-  try: check_dcache = subprocess.check_output("xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls %s | grep input | grep .root" % dcache_dir, shell=True).split('\n')
+  try: check_dcache = subprocess.check_output("xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls %s | grep input | grep .root" % dcache_dir, shell=True).split('\n')
   except: check_dcache = []
   try: check_dir = subprocess.check_output("ls %s/ | grep input.root" % folder, shell=True).split('\n')
   except: check_dir = []
+
   check_dir = [x for x in check_dir if '.root' in x and 'input' in x]
   check_dcache = [x for x in check_dcache if '.root' in x and 'input' in x]
 
@@ -77,6 +81,7 @@ for subdir in subdirs:
   print 'Submitting jobs..'
   dcache_dir = 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/%s/%s/' % (options.dcache_dir,subdir)
   name = '%s%s' % (CRAB,subdir)
+
 
   submit_command = './scripts/crabsub_new.py -i %s --name %s --area %s --file_prefix %s %s' % (folder,name,CRAB,dcache_dir, mass_constraint)
   os.system(submit_command)

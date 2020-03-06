@@ -140,5 +140,5 @@ First create /vols/cms/ destination folder if required.
     `mkdir /vols/cms/<dest>/`
 
 Then run uberftp command to copy from dCache:
-    `uberftp sedsk53.grid.hep.ph.ic.ac.uk ‘get -r store/user/<user>/<source>/ /vols/cms/<dest>/'`
+    `uberftp sedsk53.grid.hep.ph.ic.ac.uk 'get -r store/user/<user>/<source>/ /vols/cms/<dest>/'`
 

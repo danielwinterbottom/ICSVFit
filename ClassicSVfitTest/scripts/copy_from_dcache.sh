@@ -11,7 +11,7 @@ export job_name=$4
 
 times_per_job=20
 
-date_names=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
+date_names=($(xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
     export most_recent=0
     for k in "${date_names[@]}"; do
       date=$(echo $k | rev | cut -d"/" -f1 | rev | cut -d"_" -f1)$(echo $k | rev | cut -d"/" -f1 | rev | cut -d"_" -f2-) 
@@ -22,13 +22,13 @@ date_names=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $path1 | cut -d"/" -f2-))
 done
 
 
-directories=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls $most_recent_string))
+directories=($(xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls $most_recent_string))
 export count=0
 n_times=0
 job_num=0
 echo $most_recent_string
 for path1 in "${directories[@]}"; do
-  filelist=($(xrd gfe02.grid.hep.ph.ic.ac.uk:1097 ls /$path1/ | grep tar | rev | cut -d"/" -f1 | rev))
+  filelist=($(xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls /$path1/ | grep tar | rev | cut -d"/" -f1 | rev))
   export dir=$(pwd)
   none_in_dir=1
   if [[ $(ls -a $path2 | grep svfit_output | grep .tar) != "" ]]; then 
