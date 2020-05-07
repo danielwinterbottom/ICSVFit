@@ -53,6 +53,5 @@ for d in dirs:
     ids=','.join(j)
     cmd = 'crab resubmit -d %(crabdir)s/%(d)s --jobids=%(ids)s %(ops)s' % vars()
     os.system(cmd)
-  exit()
 
 
