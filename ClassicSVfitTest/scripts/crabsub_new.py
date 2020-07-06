@@ -105,6 +105,7 @@ config.JobType.scriptExe = outscriptname
 #config.JobType.inputFiles.extend(svfit_files)
 config.Data.totalUnits = jobs
 config.Data.outputDatasetTag= config.General.requestName
+
 if crab_area is not None:
   config.General.workArea = crab_area
 if not DRY_RUN:

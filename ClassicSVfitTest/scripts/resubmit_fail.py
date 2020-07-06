@@ -6,7 +6,7 @@ parser = OptionParser()
 
 parser.add_option("--dir", dest = "dir",
                   help="Specify folder that contains the output to be hadded")
-parser.add_option("--ops", dest= "ops", default='--siteblacklist=T3_KR_KNU,T2_TR_METU,T3_FR_IPNL', 
+parser.add_option("--ops", dest= "ops", default='--siteblacklist=T3_KR_KNU,T2_TR_METU,T3_FR_IPNL,T2_US_Wisconsin', 
                   help="extra options to be specified when resubmitting jobs")
 
 (options,args) = parser.parse_args()
@@ -42,12 +42,15 @@ def chunks(l, n):
 dirs = list_paths(crabdir)
 
 for d in dirs:
+  print '-------------------------'
+  print 'resubmitting for:', d
   status = subprocess.check_output('crab status %s/%s --long | grep failed' % (crabdir,d), shell=True)
   x= get_failed_ids(status)
 
   if len(x)<=0: continue
 
-  y = chunks(x,100)
+  #y = chunks(x,100)
+  y = chunks(x,1)
 
   for j in y:
     ids=','.join(j)

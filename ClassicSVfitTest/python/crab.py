@@ -28,5 +28,6 @@ config.Data.outputDatasetTag = ''
 config.section_('User')
 
 config.section_('Site')
-config.Site.blacklist = ['T3_IT_Bologna']
+#config.Site.blacklist = ['T3_IT_Bologna']
+config.Site.blacklist   = ['T3_KR_KNU','T2_TR_METU','T3_FR_IPNL']
 config.Site.storageSite = 'T2_UK_London_IC'
