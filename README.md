@@ -3,14 +3,17 @@
 ## Setting Up Workarea
 setup CMSSW area
 ```
-cmsrel CMSSW_9_4_4
-cd CMSSW_9_4_4/src/
+cmsrel CMSSW_7_6_3
+cd CMSSW_7_6_3/src/
 cmsenv
 git cms-addpkg FWCore/Version
 ```
 clone SV Fit packages
 ```
 git clone https://github.com/SVfit/ClassicSVfit TauAnalysis/ClassicSVfit
+cd TauAnalysis/ClassicSVfit
+git checkout release_2018Mar20
+cd ../../
 git clone https://github.com/SVfit/SVfitTF TauAnalysis/SVfitTF
 ```
 clone IC analysis framework
