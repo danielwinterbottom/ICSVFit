@@ -1,0 +1,10 @@
+<lcgdict>
+  <class name="ic::Candidate"/>
+  <class name="std::vector<ic::Candidate>"/>
+  <class name="std::map<unsigned long, std::string>"/>
+  <class name="ic::Met"/>
+  <class name="ic::Met::BasicMet"/>
+  <class name="std::map<unsigned long, ic::Met::BasicMet>"/>
+  <class name="std::vector<ic::Met>"/>
+</lcgdict>
+

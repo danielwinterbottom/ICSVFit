@@ -3,8 +3,8 @@
 <use   name="roofit"/>
 <use   name="rootminuit"/>
 <use   name="rootminuit2"/>
-<use   name="UserCode/ICHiggsTauTau"/>
 <use   name="boost"/>
+<use   name=""/>
 <Flags CPPDEFINES="USE_SVFITTF"/>
 <Flags LDFLAGS="-rdynamic" />
 <Flags ADD_SUBDIR="1"/>

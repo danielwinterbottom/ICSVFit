@@ -5,8 +5,8 @@
 
 #include "TFile.h"
 #include "TTree.h"
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-#include "UserCode/ICHiggsTauTau/interface/Met.hh"
+#include "ICSVFit/ClassicSVfitTest/interface/Candidate.hh"
+#include "ICSVFit/ClassicSVfitTest/interface/Met.hh"
 #include "TauAnalysis/ClassicSVfit/interface/ClassicSVfit.h"
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
