@@ -1,6 +1,9 @@
 # ICSVFit
 
 ## Setting Up Workarea
+
+make sure you work on lx01!
+
 setup CMSSW area
 ```
 cmsrel CMSSW_7_6_3
@@ -20,10 +23,11 @@ git clone git@github.com:SVfit/SVfitTF TauAnalysis/SVfitTF
 clone ICSVFit package
 ```
 git clone git@github.com:danielwinterbottom/ICSVFit.git ICSVFit/
-```
 cd ICSVFit/ClassicSVfitTest
 git checkout fix_crab 
 cd ../../
+```
+
 
 build 
 ```
