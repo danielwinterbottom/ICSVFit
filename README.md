@@ -10,22 +10,20 @@ git cms-addpkg FWCore/Version
 ```
 clone SV Fit packages
 ```
-git clone https://github.com/SVfit/ClassicSVfit TauAnalysis/ClassicSVfit
+git clone git@github.com:SVfit/ClassicSVfit TauAnalysis/ClassicSVfit
 cd TauAnalysis/ClassicSVfit
 git checkout release_2018Mar20
 cd ../../
-git clone https://github.com/SVfit/SVfitTF TauAnalysis/SVfitTF
-```
-clone IC analysis framework
-```
-git clone git@github.com:danielwinterbottom/ICHiggsTauTau.git UserCode/ICHiggsTauTau
+git clone git@github.com:SVfit/SVfitTF TauAnalysis/SVfitTF
 ```
 
 clone ICSVFit package
 ```
 git clone git@github.com:danielwinterbottom/ICSVFit.git ICSVFit/
 ```
-
+cd ICSVFit/ClassicSVfitTest
+git checkout fix_crab 
+cd ../../
 
 build 
 ```
