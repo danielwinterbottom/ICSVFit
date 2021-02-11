@@ -3,7 +3,7 @@
 ## Setting Up Workarea
 setup CMSSW area
 ```
-cmsrel CMSSW_7_6_3
+cmsrel CMSSW_10_2_19
 cd CMSSW_7_6_3/src/
 cmsenv
 git cms-addpkg FWCore/Version

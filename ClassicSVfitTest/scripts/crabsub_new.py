@@ -105,6 +105,8 @@ config.JobType.scriptExe = outscriptname
 #config.JobType.inputFiles.extend(svfit_files)
 config.Data.totalUnits = jobs
 config.Data.outputDatasetTag= config.General.requestName
+config.JobType.allowUndistributedCMSSW = True
+
 
 if crab_area is not None:
   config.General.workArea = crab_area
