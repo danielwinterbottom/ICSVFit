@@ -39,8 +39,9 @@ for path1 in "${directories[@]}"; do
     if [[ $list  == *"$i"* ]] && [ $none_in_dir == 0 ] ; then continue; fi #if already in directory then skip
     ((count++))
     #export fullpath1=srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms//$path1/$i
-    export fullpath1=$(echo $path1/$i | cut -d "/" -f2-)
+    export fullpath1=$(echo $path1/$i | cut -d "/" -f1-)
     export fullpath2=$path2/$i
+    echo $fullpath1
     if [ $batch == 1 ]; then
       if [ $n_times == 0 ]; then 
         job=$(echo job_copy_from_dcache_"$job_name"_"$job_num".sh)
