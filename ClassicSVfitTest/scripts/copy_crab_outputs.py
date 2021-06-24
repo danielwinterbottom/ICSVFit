@@ -35,5 +35,5 @@ for subdir in subdirs:
   print "Copying outputs from:", dcache_dir
   copy_command='./scripts/copy_from_dcache.sh %s %s 0 ' % (dcache_dir,folder)
   #copy_command='./scripts/copy_from_dcache.sh %s %s 1 %s' % (dcache_dir,folder,subdir) # this will use batch
-
+  #print copy_command
   os.system(copy_command)

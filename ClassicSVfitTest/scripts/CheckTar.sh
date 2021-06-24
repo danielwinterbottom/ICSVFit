@@ -8,10 +8,10 @@ cwd=$(pwd)
 for i in "${dirs[@]}"; do
   cd $inloc/$i
 
-  N=$(ls -1 svfit_output*.tar | wc -l)
-  #N=$(ls -1 svfit_*output.root | wc -l)
+  N=$(ls -1 svfit_output*_tar.root | wc -l)
     
-  for j in $(ls *.tar); do
+  for j in $(ls *_tar_*.root); do
+    echo untarring $j in directory $i
     tar -xvf $j
   done
 

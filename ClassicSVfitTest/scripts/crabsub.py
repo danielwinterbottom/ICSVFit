@@ -40,7 +40,7 @@ EOF
 trap 'error_exit $?' ERR
 """
 CRAB_POSTFIX="""
-tar -cf svfit_output.tar svfit_*_output.root
+tar -cf svfit_output_tar.root svfit_*_output.root
 rm svfit_*_output.root
 """
 parser = OptionParser()
